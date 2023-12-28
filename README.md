@@ -1,70 +1,55 @@
-# Getting Started with Create React App
+# usePopcorn: A Movie Search and Analysis App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Introduction
 
-## Available Scripts
+usePopcorn is a React application that allows users to search for movies, view movie details, and track their watched movies. The app features a search bar, movie list, and a summary of watched movies.
 
-In the project directory, you can run:
+## Getting Started
 
-### `npm start`
+To get started with usePopcorn, clone the repository and install the dependencies:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```
+git clone https://github.com/username/usePopcorn
+cd usePopcorn
+npm install
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Once the dependencies are installed, you can run the development server:
 
-### `npm test`
+```
+npm start
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The app will be available at http://localhost:3000.
 
-### `npm run build`
+## Code Overview
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+The code for usePopcorn is organized into several components:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- `App.js`: The main component of the app. It contains the state and logic for the search bar, movie list, and watched movies summary.
+- `MovieList.js`: A component that displays a list of movies.
+- `MovieSummary.js`: A component that displays a summary of watched movies.
+- `Search.js`: A component that allows users to search for movies.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## App.js
 
-### `npm run eject`
+The `App.js` component is the main component of the app. It contains the state and logic for the search bar, movie list, and watched movies summary.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+The state of the `App.js` component consists of the following:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- `query`: The current search query.
+- `movies`: The list of movies that match the search query.
+- `watched`: The list of movies that the user has watched.
+- `isOpen1`: A boolean that determines whether the movie list is open.
+- `isOpen2`: A boolean that determines whether the watched movies summary is open.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+The `App.js` component also contains the following logic:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- When the user types in the search bar, the `setQuery` function is called. This function updates the `query` state and fetches the list of movies that match the search query.
+- When the user clicks on the "Watched" button, the `setIsOpen2` function is called. This function toggles the `isOpen2` state, which determines whether the watched movies summary is open.
 
-## Learn More
+## MovieList.js
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+The `MovieList.js` component displays a list of movies. It receives the list of movies as a prop and renders a list item for each movie.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Each movie list item contains the
