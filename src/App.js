@@ -135,8 +135,7 @@ function Movie({ movie }) {
   );
 }
 
-function WatchedBox() {
-  const [watched, setWatched] = useState(tempWatchedData);
+function WatchedBox({ children }) {
   const [isOpen2, setIsOpen2] = useState(true);
 
   return (
@@ -147,12 +146,7 @@ function WatchedBox() {
       >
         {isOpen2 ? "–" : "+"}
       </button>
-      {isOpen2 && (
-        <>
-          <WatchedSummary watched={watched} />
-          <WatchedList watched={watched} />
-        </>
-      )}
+      {isOpen2 && children}
     </div>
   );
 }
@@ -216,6 +210,7 @@ function WatchedList({ watched }) {
 
 export default function App() {
   const [movies, setMovies] = useState(tempMovieData);
+  const [watched, setWatched] = useState(tempWatchedData);
 
   return (
     <>
@@ -223,11 +218,16 @@ export default function App() {
         <Search />
         <NumResults movies={movies} />
       </Navbar>
+
       <Main>
         <ListBox>
           <MovieList movies={movies} />
         </ListBox>
-        <WatchedBox />
+
+        <WatchedBox>
+          <WatchedSummary watched={watched} />
+          <WatchedList watched={watched} />
+        </WatchedBox>
       </Main>
     </>
   );
