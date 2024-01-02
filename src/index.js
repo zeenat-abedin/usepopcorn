@@ -11,6 +11,6 @@ root.render(
       maxRating={5}
       messages={["Terrible", "Bad", "Okay", "Good", "Amazing"]}
     />
-    {/* <App /> */}
+    <App />
   </React.StrictMode>
 );
