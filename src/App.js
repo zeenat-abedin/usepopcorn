@@ -192,17 +192,20 @@ function WatchedList({ watched }) {
 }
 
 export default function App() {
-  const query = "interstellar";
+  const [loading, setLoading] = useState(false);
   const [movies, setMovies] = useState(tempMovieData);
   const [watched, setWatched] = useState(tempWatchedData);
+  const query = "interstellar";
 
   useEffect(() => {
     async function fetchMovies() {
+      setLoading(true);
       const res = await fetch(
         `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
       );
       const data = await res.json();
       setMovies(data.Search);
+      setLoading(false);
     }
     fetchMovies();
   }, []);
@@ -215,9 +218,14 @@ export default function App() {
       </Navbar>
 
       <Main>
-        <Box>
-          <MovieList movies={movies} />
-        </Box>
+        {loading ? (
+          <Loader />
+        ) : (
+          <Box>
+            <MovieList movies={movies} />
+          </Box>
+        )}
+
         <Box>
           <WatchedSummary watched={watched} />
           <WatchedList watched={watched} />
@@ -225,4 +233,8 @@ export default function App() {
       </Main>
     </>
   );
+}
+
+function Loader() {
+  return <p className="loader">Loading...</p>;
 }
