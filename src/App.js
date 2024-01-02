@@ -195,17 +195,26 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [movies, setMovies] = useState(tempMovieData);
   const [watched, setWatched] = useState(tempWatchedData);
+  const [error, setError] = useState("");
+
   const query = "interstellar";
 
   useEffect(() => {
     async function fetchMovies() {
-      setLoading(true);
-      const res = await fetch(
-        `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
-      );
-      const data = await res.json();
-      setMovies(data.Search);
-      setLoading(false);
+      try {
+        setLoading(true);
+        const res = await fetch(
+          `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+        );
+        if (!res.ok)
+          throw new Error("Something went wrong with fetching movies");
+        const data = await res.json();
+        setMovies(data.Search);
+        setLoading(false);
+      } catch (err) {
+        console.error(err.message);
+        setError(err.message);
+      }
     }
     fetchMovies();
   }, []);
@@ -218,14 +227,11 @@ export default function App() {
       </Navbar>
 
       <Main>
-        {loading ? (
-          <Loader />
-        ) : (
-          <Box>
-            <MovieList movies={movies} />
-          </Box>
-        )}
-
+        <Box>
+          {loading && <Loader />}
+          {!loading && !error && <MovieList movies={movies} />}
+          {error && <ErrorMessage message={error} />}
+        </Box>
         <Box>
           <WatchedSummary watched={watched} />
           <WatchedList watched={watched} />
@@ -237,4 +243,12 @@ export default function App() {
 
 function Loader() {
   return <p className="loader">Loading...</p>;
+}
+
+function ErrorMessage({ message }) {
+  return (
+    <p>
+      <span>😡</span> {message}
+    </p>
+  );
 }
