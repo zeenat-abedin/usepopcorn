@@ -105,21 +105,19 @@ function Box({ children }) {
   );
 }
 
-function MovieList() {
-  const [movies, setMovies] = useState(tempMovieData);
-
+function MovieList({ movies, onSelectMovie }) {
   return (
-    <ul className="list">
+    <ul className="list list-movies">
       {movies?.map((movie) => (
-        <Movie movie={movie} key={movie.imdbID} />
+        <Movie movie={movie} key={movie.imdbID} onSelectMovie={onSelectMovie} />
       ))}
     </ul>
   );
 }
 
-function Movie({ movie }) {
+function Movie({ movie, onSelectMovie }) {
   return (
-    <li>
+    <li onClick={() => onSelectMovie(movie.imdbID)}>
       <img src={movie.Poster} alt={`${movie.Title} poster`} />
       <h3>{movie.Title}</h3>
       <div>
@@ -130,6 +128,10 @@ function Movie({ movie }) {
       </div>
     </li>
   );
+}
+
+function MovieDetails({ selectedId }) {
+  return <div className="details">{selectedId}</div>;
 }
 
 function WatchedSummary({ watched }) {
@@ -195,7 +197,7 @@ export default function App() {
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
   const [error, setError] = useState("");
-  const [selectedId, setSelectedId] = useState(null);
+  const [selectedId, setSelectedId] = useState("tt0907837");
   // const tempQuery = "interstellar";
   // const query = "snfjggjgjgh";
 
@@ -213,14 +215,13 @@ export default function App() {
           throw new Error("Something went wrong with fetching movies");
 
         const data = await res.json();
-
+        console.log("data", data);
         if (data.Response === "False") {
           throw new Error("Movie not found");
         }
-        console.log(data);
 
         setMovies(data.Search);
-        setLoading(false);
+        console.log(data.Search);
       } catch (err) {
         console.error(err.message);
         setError(err.message);
@@ -237,6 +238,13 @@ export default function App() {
     fetchMovies();
   }, [query]);
 
+  function handleSelectMovie(id) {
+    setSelectedId(id);
+  }
+
+  function handleCloseMovie() {
+    setSelectedId(null);
+  }
   return (
     <>
       <Navbar>
@@ -247,12 +255,23 @@ export default function App() {
       <Main>
         <Box>
           {loading && <Loader />}
-          {!loading && !error && <MovieList movies={movies} />}
+          {!loading && !error && (
+            <MovieList movies={movies} onSelectMovie={handleSelectMovie} />
+          )}
           {error && <ErrorMessage message={error} />}
         </Box>
         <Box>
-          <WatchedSummary watched={watched} />
-          <WatchedList watched={watched} />
+          {selectedId ? (
+            <MovieDetails
+              selectedId={selectedId}
+              onCloseMovie={handleCloseMovie}
+            />
+          ) : (
+            <>
+              <WatchedSummary watched={watched} />
+              <WatchedList watched={watched} />
+            </>
+          )}
         </Box>
       </Main>
     </>
