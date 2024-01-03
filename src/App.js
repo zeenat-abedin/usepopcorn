@@ -246,11 +246,11 @@ export default function App() {
   }, [query]);
 
   function handleSelectMovie(id) {
-    setSelectedId(id);
+    setSelectedId((selectedId) => (id === selectedId ? null : id));
   }
 
-  function handleCloseMovie() {
-    setSelectedId(null);
+  function handleCloseMovie(id) {
+    setSelectedId(id);
   }
   return (
     <>
