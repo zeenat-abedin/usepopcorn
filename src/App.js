@@ -132,15 +132,14 @@ function Movie({ movie, onSelectMovie }) {
   );
 }
 
-function MovieDetails({ selectedId, onCloseMovie }) {
+function MovieDetails({ selectedId, onCloseMovie, onAddWatched }) {
   const [movie, setMovie] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+
   const {
-    Poster: poster,
     Title: title,
-    Type: type,
     Year: year,
-    imdbID,
+    Poster: poster,
     Runtime: runtime,
     imdbRating,
     Plot: plot,
@@ -150,7 +149,21 @@ function MovieDetails({ selectedId, onCloseMovie }) {
     Genre: genre,
   } = movie;
 
-  console.log({ title, year });
+  function handleAdd() {
+    const newWatchedMovie = {
+      ...movie,
+      imdbID: selectedId,
+      title,
+      year,
+      poster,
+      imdbRating: Number(imdbRating),
+      runtime: Number(runtime.split(" ").at(0)),
+      watchedDate: Date.now(),
+    };
+
+    onAddWatched(newWatchedMovie);
+  }
+
   useEffect(() => {
     async function getMovieDetails() {
       setIsLoading(true);
@@ -187,6 +200,9 @@ function MovieDetails({ selectedId, onCloseMovie }) {
       <section>
         <div className="rating">
           <StarRating maxRating={10} size={24} />
+          <button className="btn-add" onClick={handleAdd}>
+            + Add to list
+          </button>
         </div>
         <p>
           <em>{plot}</em>
@@ -229,12 +245,12 @@ function WatchedSummary({ watched }) {
   );
 }
 
-function WatchedList({ watched }) {
+function WatchedMovie({ watched }) {
   return (
     <ul className="list">
       {watched.map((movie) => (
         <li key={movie.imdbID}>
-          <img src={movie.Poster} alt={`${movie.Title} poster`} />
+          <img src={movie.poster} alt={`${movie.title} poster`} />
           <h3>{movie.Title}</h3>
           <div>
             <p>
@@ -257,58 +273,64 @@ function WatchedList({ watched }) {
 }
 
 export default function App() {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState("inception");
   const [loading, setLoading] = useState(false);
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
   const [error, setError] = useState("");
-  const [selectedId, setSelectedId] = useState("tt0907837");
+  const [selectedId, setSelectedId] = useState(null);
   // const tempQuery = "interstellar";
   // const query = "snfjggjgjgh";
 
-  useEffect(() => {
-    async function fetchMovies() {
-      try {
-        setLoading(true);
-        setError("");
+  useEffect(
+    function () {
+      async function fetchMovies() {
+        try {
+          setLoading(true);
+          setError("");
 
-        const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
-        );
+          const res = await fetch(
+            `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+          );
 
-        if (!res.ok)
-          throw new Error("Something went wrong with fetching movies");
+          if (!res.ok)
+            throw new Error("Something went wrong with fetching movies");
 
-        const data = await res.json();
-        console.log("data", data);
-        if (data.Response === "False") {
-          throw new Error("Movie not found");
+          const data = await res.json();
+          console.log("data", data);
+          if (data.Response === "False") {
+            throw new Error("Movie not found");
+          }
+
+          setMovies(data.Search);
+          console.log(data.Search);
+        } catch (err) {
+          console.error(err.message);
+          setError(err.message);
+        } finally {
+          setLoading(false);
         }
-
-        setMovies(data.Search);
-        console.log(data.Search);
-      } catch (err) {
-        console.error(err.message);
-        setError(err.message);
-      } finally {
-        setLoading(false);
       }
-    }
-    if (query.length < 3) {
-      setMovies([]);
-      setError("");
-      return;
-    }
+      if (query.length < 3) {
+        setMovies([]);
+        setError("");
+        return;
+      }
 
-    fetchMovies();
-  }, [query]);
+      fetchMovies();
+    },
+    [query]
+  );
 
   function handleSelectMovie(id) {
     setSelectedId((selectedId) => (id === selectedId ? null : id));
   }
 
-  function handleCloseMovie(id) {
-    setSelectedId(id);
+  function handleCloseMovie() {
+    setSelectedId(null);
+  }
+  function handleAddWatched(movie) {
+    setWatched((watched) => [...watched, movie]);
   }
   return (
     <>
@@ -330,11 +352,12 @@ export default function App() {
             <MovieDetails
               selectedId={selectedId}
               onCloseMovie={handleCloseMovie}
+              onAddWatched={handleAddWatched}
             />
           ) : (
             <>
               <WatchedSummary watched={watched} />
-              <WatchedList watched={watched} />
+              <WatchedMovie watched={watched} />
             </>
           )}
         </Box>
