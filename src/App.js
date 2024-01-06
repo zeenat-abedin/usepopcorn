@@ -132,10 +132,13 @@ function Movie({ movie, onSelectMovie }) {
   );
 }
 
-function MovieDetails({ selectedId, onCloseMovie, onAddWatched }) {
+function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
   const [movie, setMovie] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [userRating, setUserRating] = useState("");
+
+  const isWatched = watched.map((movie) => movie.imdbID).includes(selectedId);
+  console.log(isWatched);
 
   const {
     Title: title,
@@ -205,11 +208,21 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched }) {
 
       <section>
         <div className="rating">
-          <StarRating maxRating={10} size={24} onSetRating={setUserRating} />
-          {userRating > 0 && (
-            <button className="btn-add" onClick={handleAdd}>
-              + Add to list
-            </button>
+          {isWatched ? (
+            <p>You rated with movie</p>
+          ) : (
+            <>
+              <StarRating
+                maxRating={10}
+                size={24}
+                onSetRating={setUserRating}
+              />
+              {userRating > 0 && (
+                <button className="btn-add" onClick={handleAdd}>
+                  + Add to list
+                </button>
+              )}
+            </>
           )}
         </div>
         <p>
@@ -218,7 +231,6 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched }) {
         <p>Starring: {actors}</p>
         <p>Directed by: {director}</p>
       </section>
-      {selectedId}
     </div>
   );
 }
@@ -361,6 +373,7 @@ export default function App() {
               selectedId={selectedId}
               onCloseMovie={handleCloseMovie}
               onAddWatched={handleAddWatched}
+              watched={watched}
             />
           ) : (
             <>
