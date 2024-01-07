@@ -156,6 +156,7 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
   console.log(title);
 
   useEffect(() => {
+    if (!title) return;
     document.title = `Movie | ${title}`;
   }, [title]);
 
