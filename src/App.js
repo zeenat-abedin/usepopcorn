@@ -153,21 +153,11 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
     Genre: genre,
   } = movie;
 
-  function handleAdd() {
-    const newWatchedMovie = {
-      ...movie,
-      imdbID: selectedId,
-      title,
-      year,
-      poster,
-      imdbRating: Number(imdbRating),
-      runtime: Number(runtime.split(" ").at(0)),
-      watchedDate: Date.now(),
-    };
+  console.log(title);
 
-    onAddWatched(newWatchedMovie);
-    onCloseMovie();
-  }
+  useEffect(() => {
+    document.title = `Movie | ${title}`;
+  }, [title]);
 
   useEffect(() => {
     async function getMovieDetails() {
@@ -185,6 +175,22 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
 
     getMovieDetails();
   }, [selectedId]);
+
+  function handleAdd() {
+    const newWatchedMovie = {
+      ...movie,
+      imdbID: selectedId,
+      title,
+      year,
+      poster,
+      imdbRating: Number(imdbRating),
+      runtime: Number(runtime.split(" ").at(0)),
+      watchedDate: Date.now(),
+    };
+
+    onAddWatched(newWatchedMovie);
+    onCloseMovie();
+  }
 
   return (
     <div className="details">
