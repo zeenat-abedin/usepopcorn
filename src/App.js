@@ -124,6 +124,10 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
 
   // const isTop = imdbRating > 8;
   // console.log(isTop);
+  const countRef = useRef(0);
+  useEffect(() => {
+    if (userRating) countRef.current = countRef.current + 1;
+  }, [userRating]);
 
   useEffect(() => {
     if (!title) return;
