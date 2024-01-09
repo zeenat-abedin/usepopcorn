@@ -294,9 +294,14 @@ export default function App() {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
   const [error, setError] = useState("");
   const [selectedId, setSelectedId] = useState(null);
+
+  // const [watched, setWatched] = useState([]);
+  const [watched, setWatched] = useState(() => {
+    const storedValue = localStorage.getItem("watched");
+    return JSON.parse(storedValue) || [];
+  });
 
   useEffect(
     function () {
