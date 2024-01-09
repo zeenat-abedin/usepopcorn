@@ -6,7 +6,6 @@ export function useMovies(query) {
   const [error, setError] = useState("");
 
   const KEY = "1c1ab797";
-
   useEffect(
     function () {
       const controller = new AbortController();
@@ -46,7 +45,6 @@ export function useMovies(query) {
         return;
       }
 
-      //   handleCloseMovie();
       fetchMovies();
 
       return () => controller.abort();
