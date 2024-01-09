@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import StarRating from "./StarRating";
 import { useMovies } from "./useMovies";
 import { useLocalStorageState } from "./useLocalStorageState";
+import useKey from "./useKey";
 
 const KEY = "1c1ab797";
 
@@ -130,6 +131,8 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
   const countRef = useRef(0);
   let count = 0;
 
+  useKey("Escape", onCloseMovie);
+
   useEffect(() => {
     if (userRating) countRef.current++;
     if (userRating) count++;
@@ -156,18 +159,6 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
 
     getMovieDetails();
   }, [selectedId]);
-
-  useEffect(() => {
-    function callback(e) {
-      if (e.code === "Escape") {
-        onCloseMovie();
-      }
-    }
-    document.addEventListener("keydown", callback);
-    return () => {
-      document.removeEventListener("keydown", callback);
-    };
-  }, [onCloseMovie]);
 
   function handleAdd() {
     const newWatchedMovie = {
